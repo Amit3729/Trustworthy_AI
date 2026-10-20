@@ -1,4 +1,5 @@
 pydantic>=2.6
 pytest>=8.0
-# Optional: only needed for the real-model backend (python demo.py --llm claude)
-# anthropic
+# Optional: only needed for a real-model backend
+# groq        # python demo.py --llm groq    (needs GROQ_API_KEY)
+# anthropic   # python demo.py --llm claude  (needs ANTHROPIC_API_KEY)

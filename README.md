@@ -35,7 +35,10 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-The default model is an offline, deterministic extractive answerer, so no API key is needed. To use a real model, run `pip install anthropic`, set `ANTHROPIC_API_KEY`, and pass `--llm claude` (default model `claude-opus-5-5`, which you can override with `CLAUDE_MODEL`).
+The default model is an offline, deterministic extractive answerer, so no API key is needed. To use a real model:
+
+- **Groq:** `uv pip install groq`, set `GROQ_API_KEY`, and pass `--llm groq` (default model `llama-3.3-70b-versatile`; override with `GROQ_MODEL`).
+- **Claude:** `uv pip install anthropic`, set `ANTHROPIC_API_KEY`, and pass `--llm claude` (default model `claude-opus-5-5`; override with `CLAUDE_MODEL`).
 
 ## Usage
 
@@ -85,7 +88,7 @@ Each `demo.py` run appends to `audit_log.jsonl`. The log stores a hash of the in
 ```bash
 python evaluate.py     # runs all cases, writes results/results.{md,json} and results/metrics.json
 python tradeoffs.py    # sweeps thresholds, writes results/tradeoffs.md
-python -m pytest       # 72 passed, 8 xfailed
+python -m pytest       # 72 passed, 8 xfailed (+4 Groq backend tests when `groq` is installed)
 ```
 
 The 8 `xfail` tests are the documented failure cases. They are marked `strict`, so if a change fixes one, pytest flags it and the report can be updated.
@@ -110,7 +113,7 @@ The 8 `xfail` tests are the documented failure cases. They are marked `strict`, 
 - **Redact before the model, not after.** Once PII has been sent to an API or written to a log, redacting the output does not undo that.
 - **Leaks are blocked, never retried.** Schema and grounding errors are usually accidental; a leak is a security event.
 - **Fallback instead of trimming.** Deleting an unsupported sentence can change the meaning of the rest, so the whole answer goes to a safe fallback.
-- **The model is untrusted.** All checks treat the LLM as a black box returning a string, so swapping `MockLLM` for `ClaudeLLM` changes nothing else.
+- **The model is untrusted.** All checks treat the LLM as a black box returning a string, so swapping `MockLLM` for `GroqLLM` or `ClaudeLLM` changes nothing else.
 
 ## Evaluation results
 
@@ -144,7 +147,7 @@ guardrails/
   groundedness.py    claim-level groundedness
   output_safety.py   canary / system-prompt / internal-document / secret leak detection
   knowledge_base.py  reference documents + TF-IDF retriever
-  llm.py             MockLLM, ScriptedLLM, ClaudeLLM
+  llm.py             MockLLM, ScriptedLLM, GroqLLM, ClaudeLLM
   pipeline.py        GuardedAssistant: orchestration, retry/fallback, audit log
   evaluation.py      test runner and metrics
 data/knowledge_base.json   14 public docs (one poisoned) + 1 internal doc

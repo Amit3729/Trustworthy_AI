@@ -80,7 +80,7 @@
 
   <!-- LLM -->
   <rect x="270" y="578" width="400" height="66" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.4"/>
-  <text x="470" y="602" text-anchor="middle" class="title">LLM (untrusted): Mock · Scripted · Claude</text>
+  <text x="470" y="602" text-anchor="middle" class="title">LLM (untrusted): Mock · Scripted · Groq · Claude</text>
   <text x="470" y="622" text-anchor="middle" class="body">system prompt with canary token; user text fenced</text>
   <text x="470" y="638" text-anchor="middle" class="body">as untrusted; must return a JSON object</text>
   <path class="flow" d="M470 644 V678" marker-end="url(#arrow)"/>

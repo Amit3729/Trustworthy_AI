@@ -2,6 +2,7 @@
 
     python demo.py "What time do you open on Saturday?"
     python demo.py --verbose "My SSN is 123-45-6789, do you accept Medicare?"
+    python demo.py --llm groq "How do I book an appointment?"     # needs `pip install groq` + GROQ_API_KEY
     python demo.py --llm claude "How do I book an appointment?"   # needs `pip install anthropic` + API key
     python demo.py                                                  # interactive mode
 """
@@ -10,7 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 
-from guardrails import ClaudeLLM, GuardedAssistant, MockLLM
+from guardrails import ClaudeLLM, GroqLLM, GuardedAssistant, MockLLM
 
 
 def show(result, verbose: bool) -> None:
@@ -33,12 +34,12 @@ def show(result, verbose: bool) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("question", nargs="?")
-    parser.add_argument("--llm", choices=["mock", "claude"], default="mock")
+    parser.add_argument("--llm", choices=["mock", "groq", "claude"], default="mock")
     parser.add_argument("--verbose", "-v", action="store_true", help="print the full guardrail report")
     parser.add_argument("--audit-log", default="audit_log.jsonl", help="append-only audit log (redacted)")
     args = parser.parse_args()
 
-    llm = ClaudeLLM() if args.llm == "claude" else MockLLM()
+    llm = {"mock": MockLLM, "groq": GroqLLM, "claude": ClaudeLLM}[args.llm]()
     assistant = GuardedAssistant(llm=llm, audit_path=args.audit_log)
     if args.question:
         show(assistant.run(args.question), args.verbose)

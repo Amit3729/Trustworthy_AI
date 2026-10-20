@@ -1,10 +1,11 @@
 """LLM backends.
 
 The guardrails treat the model as an untrusted black box that returns a string,
-so any backend works. Three are provided:
+so any backend works. Four are provided:
   * MockLLM     - deterministic extractive answerer; runs offline with no API key.
   * ScriptedLLM - replays fixed outputs; used by tests to simulate bad generations
                   (malformed JSON, hallucinations, leaks) reproducibly.
+  * GroqLLM     - optional real model hosted on Groq, via the groq SDK.
   * ClaudeLLM   - optional real model via the Anthropic SDK.
 """
 from __future__ import annotations
@@ -84,15 +85,46 @@ class ScriptedLLM:
         return out
 
 
+class GroqLLM:
+    """Real model backend on Groq. Requires `pip install groq` and GROQ_API_KEY."""
+
+    name = "groq"
+
+    def __init__(self, model: str | None = None, client=None):
+        import groq  # optional dependency
+
+        self._groq = groq
+        self.client = client or groq.Groq()
+        self.model = model or os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+
+    def generate(self, system: str, question: str, documents: list[Document], feedback: str | None = None) -> str:
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": build_user_prompt(question, documents, feedback)},
+                ],
+                response_format={"type": "json_object"},
+                temperature=0,
+            )
+        except self._groq.BadRequestError as e:
+            # JSON mode returns HTTP 400 when the model cannot produce valid JSON.
+            if "json" in str(e).lower():
+                return ""  # fails schema validation -> regeneration, then safe fallback
+            raise
+        return response.choices[0].message.content or ""
+
+
 class ClaudeLLM:
     """Real model backend. Requires `pip install anthropic` and ANTHROPIC_API_KEY (or `ant auth login`)."""
 
     name = "claude"
 
     def __init__(self, model: str | None = None):
-        import anthropic  # optional dependency
+        # import anthropic  # optional dependency
 
-        self.client = anthropic.Anthropic()
+        # self.client = anthropic.Anthropic()
         self.model = model or os.environ.get("CLAUDE_MODEL", "claude-opus-5-5")
 
     def generate(self, system: str, question: str, documents: list[Document], feedback: str | None = None) -> str:

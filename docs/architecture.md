@@ -21,7 +21,7 @@ flowchart TD
     R -- drug access --> T
     R -- continue: redacted question --> RET[Retriever<br/>TF-IDF, public docs only]
     RET --> SCAN[Indirect-injection scan<br/>quarantine poisoned docs]
-    SCAN --> LLM[LLM, untrusted<br/>Mock / Scripted / Claude]
+    SCAN --> LLM[LLM, untrusted<br/>Mock / Scripted / Groq / Claude]
 
     LLM --> OG
     subgraph OG[Output guardrails, per attempt]
