@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 990" width="1200" height="990" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/>
+    </marker>
+    <style>
+      .title { font-size: 14px; font-weight: 700; fill: #0f172a; }
+      .body { font-size: 12px; fill: #334155; }
+      .group { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; }
+      .label { font-size: 11.5px; fill: #475569; }
+      .box { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.2; }
+      .flow { stroke: #475569; stroke-width: 1.6; fill: none; }
+      .retry { stroke: #c2410c; stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; }
+      .audit { stroke: #94a3b8; stroke-width: 1.2; fill: none; stroke-dasharray: 3 4; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="990" fill="#ffffff"/>
+
+  <!-- User -->
+  <rect x="370" y="18" width="200" height="44" rx="22" fill="#0f172a"/>
+  <text x="470" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">User message</text>
+  <path class="flow" d="M470 62 V88" marker-end="url(#arrow)"/>
+
+  <!-- Input guardrails -->
+  <rect x="40" y="90" width="860" height="170" rx="12" fill="#eef4ff" stroke="#3b6fd8" stroke-width="1.5"/>
+  <text x="60" y="114" class="group" fill="#1d4ed8">INPUT GUARDRAILS · before the model sees anything</text>
+
+  <rect class="box" x="60" y="128" width="260" height="116" rx="8"/>
+  <text x="190" y="152" text-anchor="middle" class="title">Prompt-injection detector</text>
+  <text x="190" y="176" text-anchor="middle" class="body">weighted rules, 6 attack families</text>
+  <text x="190" y="195" text-anchor="middle" class="body">normalized · de-obfuscated · base64 views</text>
+  <text x="190" y="214" text-anchor="middle" class="body">noisy-OR score; ≥ 0.70 blocks</text>
+  <text x="190" y="233" text-anchor="middle" class="body">0.40–0.70 logged as suspicious</text>
+
+  <rect class="box" x="340" y="128" width="260" height="116" rx="8"/>
+  <text x="470" y="152" text-anchor="middle" class="title">Sensitive-topic classifier</text>
+  <text x="470" y="176" text-anchor="middle" class="body">self-harm · emergency · drug access</text>
+  <text x="470" y="195" text-anchor="middle" class="body">legal complaint · medication/diagnosis</text>
+  <text x="470" y="214" text-anchor="middle" class="body">most severe category sets the action</text>
+  <text x="470" y="233" text-anchor="middle" class="body">(escalate / refuse / route / disclaim)</text>
+
+  <rect class="box" x="620" y="128" width="260" height="116" rx="8"/>
+  <text x="750" y="152" text-anchor="middle" class="title">PII detector</text>
+  <text x="750" y="176" text-anchor="middle" class="body">regex + validators (Luhn, SSN rules)</text>
+  <text x="750" y="195" text-anchor="middle" class="body">email · phone · SSN · card · MRN</text>
+  <text x="750" y="214" text-anchor="middle" class="body">date of birth · IP · self-stated name</text>
+  <text x="750" y="233" text-anchor="middle" class="body">redact to [EMAIL]-style placeholders</text>
+
+  <path class="flow" d="M470 260 V288" marker-end="url(#arrow)"/>
+
+  <!-- Router -->
+  <rect x="270" y="290" width="400" height="62" rx="8" fill="#ffffff" stroke="#0f172a" stroke-width="1.6"/>
+  <text x="470" y="315" text-anchor="middle" class="title">Policy router</text>
+  <text x="470" y="337" text-anchor="middle" class="body">escalate › block › refuse › route to human › continue</text>
+
+  <rect x="940" y="282" width="230" height="78" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+  <text x="1055" y="306" text-anchor="middle" class="title">Vetted response templates</text>
+  <text x="1055" y="327" text-anchor="middle" class="body">crisis (988 / 911) · emergency</text>
+  <text x="1055" y="346" text-anchor="middle" class="body">block · refuse · staff hand-off</text>
+  <path class="flow" d="M670 321 H938" marker-end="url(#arrow)"/>
+  <text x="804" y="313" text-anchor="middle" class="label">stop: LLM never called</text>
+
+  <path class="flow" d="M470 352 V388" marker-end="url(#arrow)"/>
+  <text x="480" y="375" class="label">continue with redacted question</text>
+
+  <!-- Retrieval -->
+  <rect class="box" x="270" y="390" width="400" height="58" rx="8"/>
+  <text x="470" y="414" text-anchor="middle" class="title">Retriever</text>
+  <text x="470" y="435" text-anchor="middle" class="body">TF-IDF over public clinic documents (internal docs excluded)</text>
+  <path class="flow" d="M470 448 V478" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="270" y="480" width="400" height="58" rx="8"/>
+  <text x="470" y="504" text-anchor="middle" class="title">Indirect-injection scan</text>
+  <text x="470" y="525" text-anchor="middle" class="body">documents with embedded instructions are quarantined</text>
+  <path class="flow" d="M470 538 V576" marker-end="url(#arrow)"/>
+
+  <!-- LLM -->
+  <rect x="270" y="578" width="400" height="66" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.4"/>
+  <text x="470" y="602" text-anchor="middle" class="title">LLM (untrusted): Mock · Scripted · Claude</text>
+  <text x="470" y="622" text-anchor="middle" class="body">system prompt with canary token; user text fenced</text>
+  <text x="470" y="638" text-anchor="middle" class="body">as untrusted; must return a JSON object</text>
+  <path class="flow" d="M470 644 V678" marker-end="url(#arrow)"/>
+
+  <!-- Output guardrails -->
+  <rect x="40" y="680" width="860" height="172" rx="12" fill="#eefaf1" stroke="#2f9e5b" stroke-width="1.5"/>
+  <text x="60" y="704" class="group" fill="#15803d">OUTPUT GUARDRAILS · every generation attempt, in this order</text>
+
+  <rect class="box" x="60" y="718" width="195" height="118" rx="8"/>
+  <text x="157" y="741" text-anchor="middle" class="title">1 · Leak detector</text>
+  <text x="157" y="764" text-anchor="middle" class="body">raw text, before parsing</text>
+  <text x="157" y="783" text-anchor="middle" class="body">canary · prompt n-grams</text>
+  <text x="157" y="802" text-anchor="middle" class="body">internal docs · secrets</text>
+
+  <rect class="box" x="275" y="718" width="195" height="118" rx="8"/>
+  <text x="372" y="741" text-anchor="middle" class="title">2 · Schema validator</text>
+  <text x="372" y="764" text-anchor="middle" class="body">JSON → strict Pydantic</text>
+  <text x="372" y="783" text-anchor="middle" class="body">types, enums, no extra keys</text>
+  <text x="372" y="802" text-anchor="middle" class="body">citations ⊆ retrieved docs</text>
+
+  <rect class="box" x="490" y="718" width="195" height="118" rx="8"/>
+  <text x="587" y="741" text-anchor="middle" class="title">3 · Output PII</text>
+  <text x="587" y="764" text-anchor="middle" class="body">same detector as input</text>
+  <text x="587" y="783" text-anchor="middle" class="body">public clinic contacts</text>
+  <text x="587" y="802" text-anchor="middle" class="body">allowlisted; others redacted</text>
+
+  <rect class="box" x="705" y="718" width="180" height="118" rx="8"/>
+  <text x="795" y="741" text-anchor="middle" class="title">4 · Groundedness</text>
+  <text x="795" y="764" text-anchor="middle" class="body">per-claim word overlap</text>
+  <text x="795" y="783" text-anchor="middle" class="body">numbers must match</text>
+  <text x="795" y="802" text-anchor="middle" class="body">negation must agree</text>
+
+  <path class="flow" d="M255 777 H273" marker-end="url(#arrow)"/>
+  <path class="flow" d="M470 777 H488" marker-end="url(#arrow)"/>
+  <path class="flow" d="M685 777 H703" marker-end="url(#arrow)"/>
+
+  <!-- Retry loop -->
+  <path class="retry" d="M60 800 H30 V611 H268" marker-end="url(#arrow-red)"/>
+  <text x="18" y="705" class="label" fill="#c2410c" transform="rotate(-90 18 705)" text-anchor="middle">schema or grounding fail → regenerate once</text>
+
+  <!-- Outcomes -->
+  <path class="flow" d="M190 852 V896" marker-end="url(#arrow)"/>
+  <path class="flow" d="M470 852 V896" marker-end="url(#arrow)"/>
+  <path class="flow" d="M750 852 V896" marker-end="url(#arrow)"/>
+  <text x="198" y="878" class="label">all checks pass</text>
+  <text x="478" y="878" class="label">still failing after retry</text>
+  <text x="758" y="878" class="label">leak found (no retry)</text>
+
+  <rect x="60" y="898" width="260" height="70" rx="8" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.4"/>
+  <text x="190" y="922" text-anchor="middle" class="title">Answer</text>
+  <text x="190" y="942" text-anchor="middle" class="body">redacted text + citations</text>
+  <text x="190" y="959" text-anchor="middle" class="body">+ disclaimer / privacy notices</text>
+
+  <rect x="340" y="898" width="260" height="70" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.4"/>
+  <text x="470" y="922" text-anchor="middle" class="title">Safe fallback</text>
+  <text x="470" y="942" text-anchor="middle" class="body">"couldn't produce a reliable answer,</text>
+  <text x="470" y="959" text-anchor="middle" class="body">please call reception"</text>
+
+  <rect x="620" y="898" width="260" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="750" y="922" text-anchor="middle" class="title">Block</text>
+  <text x="750" y="942" text-anchor="middle" class="body">generic refusal; treated as</text>
+  <text x="750" y="959" text-anchor="middle" class="body">a security event</text>
+
+  <!-- Audit log -->
+  <rect x="940" y="560" width="230" height="110" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.2"/>
+  <text x="1055" y="584" text-anchor="middle" class="title">Audit log (JSONL)</text>
+  <text x="1055" y="606" text-anchor="middle" class="body">input hash, detector results,</text>
+  <text x="1055" y="625" text-anchor="middle" class="body">decision, modifications</text>
+  <text x="1055" y="644" text-anchor="middle" class="body">PII logged as type only</text>
+  <path class="audit" d="M900 175 H1186 V615 H1172"/>
+  <path class="audit" d="M670 509 H1055 V558"/>
+  <path class="audit" d="M900 766 H1055 V672"/>
+  <text x="1063" y="455" class="label">every stage</text>
+  <text x="1063" y="471" class="label">appends events</text>
+</svg>
